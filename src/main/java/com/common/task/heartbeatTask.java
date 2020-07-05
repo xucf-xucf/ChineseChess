@@ -9,8 +9,8 @@ import com.dbSource.base.service.BaseService;
 import com.dbSource.redis.RedisUtil;
 @Controller
 public class heartbeatTask extends BaseService{
-	@Resource
-	RedisUtil redisUtil;
+//	@Resource
+//	RedisUtil redisUtil;
 	public void task(){
 //		System.out.println("心跳。。。。");
 //		System.out.println(baseDao.selectList(NameSpace.BaseInfo, "BaseInfo"));

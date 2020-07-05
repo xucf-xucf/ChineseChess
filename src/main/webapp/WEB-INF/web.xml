@@ -17,8 +17,8 @@
 		<param-name>contextConfigLocation</param-name>
 		<param-value>
 		  classpath:spring.xml, 
-		 classpath:spring-mybatis.xml,
-		 classpath:app-redis.xml 
+		 classpath:spring-mybatis.xml<!--,
+		 classpath:app-redis.xml -->
 		</param-value>
 	</context-param>
 
