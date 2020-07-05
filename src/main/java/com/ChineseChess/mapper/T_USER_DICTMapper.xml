@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.library.mapper.T_USER_DICTMapper">
+	
+	<select id = "findUser"  parameterType="map" resultType="map" >
+		select a.user_id,a.user_name,a.user_desc,a.user_account,a.user_password,date_format(a.create_time,'%Y-%m-%d %h:%i:%s') as create_time,
+		(select role_name from t_role_dict b where b.role_id = a.role_id) as user_role,
+		(select count(b.user_id) user_borrow_top from t_borrow_dict b where b.user_id = a.user_id group by b.user_id) user_borrow_top
+		from t_user_dict a
+		where 1=1
+		<if test="userId != null" >
+			     and user_id = #{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="userName != null " >
+			     and user_name like '%${userName}%'
+		</if>
+		<if test="roleId != null " >
+			     and role_id = #{roleId,jdbcType=VARCHAR}
+		</if>
+		order by user_borrow_top desc
+		 limit #{start},#{pageSize}
+	</select>
+	
+	<select id = "findUserGame"  parameterType="map" resultType="map" >
+		select 
+		a.user_id,
+		a.user_name,
+		a.user_desc,
+		(select count(game_id) from t_game_log 
+		where (user_r = user_id
+		or user_b =user_id)
+		and game_type='0') user_game_count,
+		(select count(game_id) from t_game_log 
+		where win_user = user_id
+		and game_type='0')/(select count(game_id) from t_game_log 
+		where (user_r =user_id
+		or user_b = user_id)
+		and game_type='0') user_win_rate,
+		(select count(game_id) from t_game_log 
+		where user_r = user_id
+		and game_type='1' )user_div_game_count
+		from t_user_dict a
+		where 1=1
+		and user_id in (${ids})
+		<if test="userId != null" >
+			     and user_id = #{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="userName != null " >
+			     and user_name like '%${userName}%'
+		</if>
+		<if test="roleId != null " >
+			     and role_id = #{roleId,jdbcType=VARCHAR}
+		</if>
+		 limit #{start},#{pageSize}
+	</select>
+	
+	<insert id="addUser"  parameterType="map">
+		insert into t_user_dict
+		(
+		user_id
+		<if test="addUserName != null  " >
+		  ,user_name
+		</if>
+		<if test="addUserAccount != null  " >
+		  ,user_account
+		</if>
+		<if test="addUserPassword != null  " >
+		  ,user_password
+		</if>
+		<if test="addUserDesc != null  " >
+		  ,user_desc
+		</if>
+		<if test="addRoleId != null  " >
+		  ,role_id
+		</if>
+		)values(
+		#{addUserId,jdbcType=VARCHAR}
+		<if test="addUserName != null  " >
+		  ,#{addUserName,jdbcType=VARCHAR}
+		</if>
+		<if test="addUserAccount != null  " >
+		  ,#{addUserAccount,jdbcType=VARCHAR}
+		</if>
+		<if test="addUserPassword != null  " >
+		  ,#{addUserPassword,jdbcType=VARCHAR}
+		</if>
+		<if test="addUserDesc != null  " >
+		  ,#{addUserDesc,jdbcType=VARCHAR}
+		</if>
+		<if test="addRoleId != null  " >
+		  ,#{addRoleId,jdbcType=VARCHAR}
+		</if>
+		)
+	</insert>
+	
+	<update  id="editUser"  parameterType="map">
+	<if test="userId != null">
+		update t_user_dict 
+		 <set >
+		    <if test="userName != null" >
+		      user_name = #{userName,jdbcType=VARCHAR},
+		    </if>
+		    <if test="userPassword != null" >
+		      user_password = #{userPassword,jdbcType=VARCHAR},
+		    </if>
+		    <if test="userDesc != null" >
+		      user_desc = #{userDesc,jdbcType=VARCHAR},
+		    </if>
+		    <if test="roleId != null" >
+		      role_id = #{roleId,jdbcType=VARCHAR},
+		    </if>
+		  </set>
+		where user_id = #{userId,jdbcType=VARCHAR}
+	</if>
+	</update >
+	
+	<delete id="delUser"  parameterType="map">
+		delete from t_user_dict
+		where user_id = #{userId,jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="findPageWithCount" parameterType="map" resultType="String" >
+	  select count(1)
+	  from t_user_dict where user_id in (${ids})
+	 <if test="userId != null" >
+			     and user_id = #{userId,jdbcType=VARCHAR}
+		</if>
+		<if test="userName != null " >
+			     and user_name like '%${userName}%'
+		</if>
+		<if test="roleId != null " >
+			     and role_id = #{roleId,jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id ="findOneUser" parameterType="map" resultType="map" >
+		select a.user_id,a.user_name,a.user_desc,a.user_account,a.user_password,date_format(a.create_time ,'%Y-%m-%d %h:%i:%s') as create_time,
+		(select role_name from t_role_dict b where b.role_id = a.role_id) as user_role
+		from t_user_dict a
+		 where a.user_id = #{userId,jdbcType=VARCHAR}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+</mapper>

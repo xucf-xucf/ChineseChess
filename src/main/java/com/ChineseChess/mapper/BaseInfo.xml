@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ChineseChess.mapper.BaseInfo">
+
+	<select id="countAccount" parameterType="String" resultType="Integer">
+		select count(1) from t_user_dict where user_account = #{account}
+	</select>
+	<select id="checkUser" parameterType="map" resultType="map">
+		select * from t_user_dict where user_account = #{userAccount} and
+		user_password = #{userPwd}
+	</select>
+	<select id="selectData" parameterType="map" resultType="map">
+		select
+		account_data,
+		account_time,
+		account_type,
+		account_consume,
+		account_gain,
+		account_mark,
+		account_site
+		from t_account_data
+		where account_user_dict_account = #{account}
+	</select>
+
+
+	<insert id="addAccount" parameterType="map">
+		insert into t_user_dict (
+		user_account,
+		user_name,
+		user_password
+		<if test="userId != null">
+			,user_id
+		</if>
+		<if test="roleId != null">
+			,role_id
+		</if>
+		)values(
+		#{regeditAccount},
+		#{name},
+		#{regeditPwd}
+		<if test="userId != null">
+			,#{userId}
+		</if>
+		<if test="roleId != null">
+			,#{roleId}
+		</if>
+		)
+	</insert>
+
+
+	<insert id="saveGame" parameterType="map">
+		insert into t_game_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="gameId != null">
+				game_id,
+			</if>
+			<if test="userR != null">
+				user_r,
+			</if>
+			<if test="userB != null">
+				user_b,
+			</if>
+			<if test="winUser != null">
+				win_user,
+			</if>
+			<if test="roundCount != null">
+				round_count,
+			</if>
+			<if test="gameInfo != null">
+				game_info,
+			</if>
+			<if test="beginTime != null">
+				begin_time,
+			</if>
+			<if test="overTime != null">
+				over_time,
+			</if>
+			<if test="gameType != null">
+				game_type,
+			</if>
+			<if test="gameBoard != null">
+				game_board,
+			</if>
+			<if test="gameMark != null">
+				game_mark,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="gameId != null">
+				#{gameId,jdbcType=VARCHAR},
+			</if>
+			<if test="userR != null">
+				#{userR,jdbcType=VARCHAR},
+			</if>
+			<if test="userB != null">
+				#{userB,jdbcType=VARCHAR},
+			</if>
+			<if test="winUser != null">
+				#{winUser,jdbcType=VARCHAR},
+			</if>
+			<if test="roundCount != null">
+				#{roundCount,jdbcType=VARCHAR},
+			</if>
+			<if test="gameInfo != null">
+				#{gameInfo,jdbcType=VARCHAR},
+			</if>
+			<if test="beginTime != null">
+				#{beginTime,jdbcType=VARCHAR},
+			</if>
+			<if test="overTime != null">
+				#{overTime,jdbcType=VARCHAR},
+			</if>
+			<if test="gameType != null">
+				#{gameType,jdbcType=VARCHAR},
+			</if>
+			<if test="gameBoard != null">
+				#{gameBoard,jdbcType=VARCHAR},
+			</if>
+			<if test="gameMark != null">
+				#{gameMark,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<select id = "qryGame" parameterType="map" resultType="map">
+		select game_id ,date_format(insert_time,'%Y-%m-%d %h:%i:%s') as
+		insert_time,game_mark,
+		case when game_type='1' then '打谱' else '对局' end as game_type
+		from t_game_log
+		where 1=1
+		<if test="userId != null">
+			and( user_r = #{userId,jdbcType=VARCHAR} or user_b =
+			#{userId,jdbcType=VARCHAR} )
+		</if>
+		order by insert_time desc
+		limit #{start},#{pageSize}
+	</select>
+	<select id = "qryGameCount" parameterType="map" resultType="String">
+		select count(game_id)
+		from t_game_log
+		where 1=1
+		<if test="userId != null">
+			and( user_r = #{userId,jdbcType=VARCHAR} or user_b =
+			#{userId,jdbcType=VARCHAR} )
+		</if>
+	</select>
+	<select id = "qryGameById" parameterType="map" resultType="map">
+		select game_board,game_info
+		from t_game_log
+		where game_id = #{gameId,jdbcType=VARCHAR} 
+	</select>
+</mapper>

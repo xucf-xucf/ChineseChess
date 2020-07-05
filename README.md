@@ -1,2 +1,3 @@
-# ChineseChess
-基于web的中国象棋在线复盘程序
+# xucf
+ChineseChess
+大家一起学习吧！
