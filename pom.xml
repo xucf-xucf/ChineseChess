@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>4.1.4.RELEASE</version>
+			<version>4.2.7.RELEASE</version>
 		</dependency>
 		<!-- maven不能导入ojdbc14，需要手动走下命令行 -->
 		<!-- mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.3.0 -Dpackaging=jar -Dfile=d:\ojdbc14.jar   -->
